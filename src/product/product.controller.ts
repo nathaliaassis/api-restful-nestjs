@@ -12,10 +12,15 @@ import { ProductRepository } from './product.repository';
 import { ProductEntity } from './product.entity';
 import { randomUUID } from 'crypto';
 import { UpdateProductDTO } from './dto/UpdateProductDTO';
+import { ProductService } from './product.service';
 
 @Controller('/products')
 export class ProductController {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private productRepository: ProductRepository,
+    private productService: ProductService,
+  ) {}
+
   @Post()
   async createProduct(@Body() productData: CreateProductDTO) {
     const product = new ProductEntity();
@@ -30,7 +35,8 @@ export class ProductController {
     product.characteristics = productData.characteristics;
     product.images = productData.imagens;
 
-    const createdProduct = this.productRepository.save(product);
+    const createdProduct = this.productService.createProduct(product);
+
     return createdProduct;
   }
 
@@ -44,15 +50,18 @@ export class ProductController {
     @Param() id: string,
     @Body() productData: UpdateProductDTO,
   ) {
-    const updatedProduct = this.productRepository.update(id, productData);
+    const updatedProduct = this.productService.updateProduct(id, productData);
 
     return updatedProduct;
   }
 
   @Delete('/:id')
   async removeProduct(@Param() id: string) {
-    const productToBeDeleted = this.productRepository.remove(id);
+    const productToBeDeleted = this.productService.deleteProduct(id);
 
-    return productToBeDeleted;
+    return {
+      message: `Product deleted successfully`,
+      product: productToBeDeleted,
+    };
   }
 }

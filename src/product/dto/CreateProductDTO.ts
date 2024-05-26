@@ -11,8 +11,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ProductEntity } from '../product.entity';
 
 export class ProductCharacteristicsDTO {
+  id: string;
   @IsString()
   @IsNotEmpty({ message: 'Name is requied' })
   name: string;
@@ -20,15 +22,21 @@ export class ProductCharacteristicsDTO {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  product: ProductEntity;
 }
 
 export class ProductImageDTO {
+  id: string;
+
   @IsUrl()
   url: string;
 
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  product: ProductEntity;
 }
 
 export class CreateProductDTO {
@@ -68,6 +76,7 @@ export class CreateProductDTO {
   @Type(() => ProductImageDTO)
   imagens: ProductImageDTO[];
 
+  @IsString()
   @IsNotEmpty()
   category: string;
 }
